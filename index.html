@@ -1,1 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mayci's GitHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: 'Press Start 2P', cursive;
+      padding: 40px;
+    }
+    h1, p {
+      margin-bottom: 40px;
+    }
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .menu-item {
+      position: relative;
+      padding-left: 30px;
+      cursor: pointer;
+    }
+    .menu-item.selected::before {
+      content: '>'; 
+      color: lime;
+      position: absolute;
+      left: 0;
+    }
+    hr {
+      width: 50%;
+      margin: 20px 0;
+    }
+    a {
+      color: white;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to my GitHub pages!</h1>
+  <p>I don't do much here, but feel free to explore anyway!</p>
+
+  <div class="menu" id="menu">
+    <div class="menu-item selected" data-link="/who.html">Who's this girl?</div>
+    <hr>
+    <div class="menu-item" data-link="https://github.com/maycivoxel">Repo's</div>
+    <div class="menu-item" data-link="https://maycithegal.nekoweb.org/">Website (14+!)</div>
+    <div class="menu-item" data-link="https://maycithegal.itch.io/">Game store</div>
+    <div class="menu-item" data-link="https://discord.gg/MVwT5NT2Xw">Discord</div>
+  </div>
+
+  <script>
+    const items = document.querySelectorAll('.menu-item');
+    let selectedIndex = 0;
+
+    function updateSelection() {
+      items.forEach((item, index) => {
+        item.classList.toggle('selected', index === selectedIndex);
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp') {
+        selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+        updateSelection();
+      } else if (e.key === 'ArrowDown') {
+        selectedIndex = (selectedIndex + 1) % items.length;
+        updateSelection();
+      } else if (e.key === 'Enter') {
+        const link = items[selectedIndex].getAttribute('data-link');
+        if (link) window.location.href = link;
+      }
+    });
+  </script>
+</body>
+</html>
 
