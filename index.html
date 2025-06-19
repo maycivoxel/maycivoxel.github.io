@@ -59,7 +59,7 @@
       transform: translateX(-50%);
       display: flex;
       gap: 20px;
-      z-index: 10;
+      z-index: 9999;
       background: rgba(0, 0, 0, 0.8);
       padding: 10px 20px;
       border-radius: 20px;
@@ -99,7 +99,7 @@
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 20;
+      z-index: 9998;
     }
 
     #popup {
@@ -240,12 +240,15 @@
         return btn;
       };
 
-      controls.appendChild(createBtn('M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z', navigateUp));    // up
-      controls.appendChild(createBtn('M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z', navigateDown));  // down
-      controls.appendChild(createBtn('M9 16.2l-3.5-3.5 1.41-1.41L9 13.38l7.09-7.09 1.41 1.41z', () => {
+      const up = createBtn('M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z', navigateUp);
+      const down = createBtn('M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z', navigateDown);
+      const enter = createBtn('M9 16.2l-3.5-3.5 1.41-1.41L9 13.38l7.09-7.09 1.41 1.41z', () => {
         if (popupOpen) selectPopupItem(); else selectItem();
-      })); // select
+      });
 
+      controls.appendChild(up);
+      controls.appendChild(down);
+      controls.appendChild(enter);
       document.body.appendChild(controls);
     }
   </script>
