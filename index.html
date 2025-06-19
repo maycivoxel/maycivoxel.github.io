@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mayci's GitHub</title>
+  <title>maycis github pages thing</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <style>
     body {
@@ -114,14 +114,18 @@
       updateSelection();
     }
 
+    function selectItem() {
+      const link = items[selectedIndex].getAttribute('data-link');
+      if (link) window.location.href = link;
+    }
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowUp') {
         navigateUp();
       } else if (e.key === 'ArrowDown') {
         navigateDown();
       } else if (e.key === 'Enter') {
-        const link = items[selectedIndex].getAttribute('data-link');
-        if (link) window.location.href = link;
+        selectItem();
       }
     });
 
@@ -150,8 +154,17 @@
         navigateDown();
       });
 
+      const btnSelect = document.createElement('button');
+      btnSelect.className = 'touch-btn';
+      btnSelect.textContent = 'SELECT';
+      btnSelect.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        selectItem();
+      });
+
       controls.appendChild(btnUp);
       controls.appendChild(btnDown);
+      controls.appendChild(btnSelect);
       document.body.appendChild(controls);
     } else {
       console.log('Non-mobile device - no touch buttons added');
