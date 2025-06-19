@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>mayci_voxel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"/>
   <style>
     body {
       background-color: black;
@@ -13,38 +13,45 @@
       padding: 40px;
       margin: 0;
     }
+
     h1, p {
       margin-bottom: 40px;
     }
+
     .menu {
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
+
     .menu-item {
       position: relative;
       padding-left: 30px;
       cursor: pointer;
     }
+
     .menu-item.selected::before {
       content: '>';
       color: lime;
       position: absolute;
       left: 0;
     }
+
     hr {
       width: 50%;
       margin: 20px 0;
     }
+
     a {
       color: white;
       text-decoration: none;
     }
+
     a:hover {
       text-decoration: underline;
     }
 
-    /* Touch buttons container */
+    /* Touch buttons */
     #touch-controls {
       position: fixed;
       bottom: 20px;
@@ -52,13 +59,12 @@
       transform: translateX(-50%);
       display: flex;
       gap: 20px;
-      z-index: 9999;
-      background: rgba(0,0,0,0.8);
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.8);
       padding: 10px 20px;
       border-radius: 20px;
     }
 
-    /* Touch buttons style */
     .touch-btn {
       background-color: limegreen;
       border: none;
@@ -68,26 +74,55 @@
       font-size: 18px;
       color: black;
       user-select: none;
-      touch-action: manipulation;
       cursor: pointer;
-      box-shadow: 0 0 10px limegreen;
-      transition: background-color 0.2s ease;
       width: 50px;
       height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .touch-btn:active {
-      background-color: #33aa33;
-      box-shadow: 0 0 5px #33aa33;
-    }
 
-    /* SVG icon styling */
     .touch-btn svg {
       fill: black;
       width: 24px;
       height: 24px;
+    }
+
+    /* Popup overlay */
+    #popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+    }
+
+    #popup {
+      background: black;
+      border: 2px solid lime;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 90%;
+    }
+
+    .popup-item {
+      padding-left: 30px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .popup-item.selected::before {
+      content: '>';
+      color: lime;
+      position: absolute;
+      left: 0;
     }
   </style>
 </head>
@@ -100,13 +135,27 @@
     <hr>
     <div class="menu-item" data-link="https://github.com/maycivoxel">Repo's</div>
     <div class="menu-item" data-link="https://maycithegal.nekoweb.org/">Website (14+!)</div>
-    <div class="menu-item" data-link="https://maycithegal.itch.io/">Game store</div>
+    <div class="menu-item" data-link="GameStore">Game store</div>
     <div class="menu-item" data-link="https://discord.gg/MVwT5NT2Xw">Discord</div>
+  </div>
+
+  <!-- POPUP -->
+  <div id="popup-overlay">
+    <div id="popup">
+      <div class="popup-item selected" data-link="https://maycithegal.itch.io/">maycithegal.itch.io</div>
+      <div class="popup-item" data-link="https://gamejolt.com/@maycivoxel/games">gamejolt.com/@maycivoxel/games</div>
+      <div class="popup-item" data-link="cancel">Cancel</div>
+    </div>
   </div>
 
   <script>
     const items = document.querySelectorAll('.menu-item');
     let selectedIndex = 0;
+
+    const popupOverlay = document.getElementById('popup-overlay');
+    const popupItems = popupOverlay.querySelectorAll('.popup-item');
+    let popupIndex = 0;
+    let popupOpen = false;
 
     function updateSelection() {
       items.forEach((item, index) => {
@@ -114,99 +163,90 @@
       });
     }
 
+    function updatePopupSelection() {
+      popupItems.forEach((item, index) => {
+        item.classList.toggle('selected', index === popupIndex);
+      });
+    }
+
     function navigateUp() {
-      selectedIndex = (selectedIndex - 1 + items.length) % items.length;
-      updateSelection();
+      if (popupOpen) {
+        popupIndex = (popupIndex - 1 + popupItems.length) % popupItems.length;
+        updatePopupSelection();
+      } else {
+        selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+        updateSelection();
+      }
     }
 
     function navigateDown() {
-      selectedIndex = (selectedIndex + 1) % items.length;
-      updateSelection();
+      if (popupOpen) {
+        popupIndex = (popupIndex + 1) % popupItems.length;
+        updatePopupSelection();
+      } else {
+        selectedIndex = (selectedIndex + 1) % items.length;
+        updateSelection();
+      }
+    }
+
+    function selectPopupItem() {
+      const link = popupItems[popupIndex].getAttribute('data-link');
+      popupOverlay.style.display = 'none';
+      popupOpen = false;
+      if (link === 'cancel') return;
+      if (link) window.location.href = link;
     }
 
     function selectItem() {
       const selectedItem = items[selectedIndex];
       const link = selectedItem.getAttribute('data-link');
 
-      if (selectedItem.textContent.trim() === 'Game store') {
-        const choice = prompt(
-          "Which one?\n1: maycithegal.itch.io\n2: gamejolt.com/@maycivoxel/games",
-          "1"
-        );
-        if (choice === '1') {
-          window.location.href = 'https://maycithegal.itch.io/';
-        } else if (choice === '2') {
-          window.location.href = 'https://gamejolt.com/@maycivoxel/games';
-        }
+      if (link === 'GameStore') {
+        popupOverlay.style.display = 'flex';
+        popupOpen = true;
+        popupIndex = 0;
+        updatePopupSelection();
       } else if (link) {
         window.location.href = link;
       }
     }
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowUp') {
-        navigateUp();
-      } else if (e.key === 'ArrowDown') {
-        navigateDown();
-      } else if (e.key === 'Enter') {
-        selectItem();
+      if (e.key === 'ArrowUp') navigateUp();
+      else if (e.key === 'ArrowDown') navigateDown();
+      else if (e.key === 'Enter') {
+        if (popupOpen) selectPopupItem();
+        else selectItem();
       }
     });
 
+    // Mobile controls
     function isMobile() {
       return ('ontouchstart' in window) || /Mobi|Android/i.test(navigator.userAgent);
     }
 
     if (isMobile()) {
-      console.log('Mobile device detected - adding touch buttons');
       const controls = document.createElement('div');
       controls.id = 'touch-controls';
 
-      // Up arrow SVG button
-      const btnUp = document.createElement('button');
-      btnUp.className = 'touch-btn';
-      btnUp.innerHTML = `
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
-        </svg>
-      `;
-      btnUp.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        navigateUp();
-      });
+      const createBtn = (svgPath, callback) => {
+        const btn = document.createElement('button');
+        btn.className = 'touch-btn';
+        btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="${svgPath}"/></svg>`;
+        btn.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          callback();
+        });
+        return btn;
+      };
 
-      // Down arrow SVG button
-      const btnDown = document.createElement('button');
-      btnDown.className = 'touch-btn';
-      btnDown.innerHTML = `
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
-        </svg>
-      `;
-      btnDown.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        navigateDown();
-      });
+      controls.appendChild(createBtn('M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z', navigateUp));    // up
+      controls.appendChild(createBtn('M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z', navigateDown));  // down
+      controls.appendChild(createBtn('M9 16.2l-3.5-3.5 1.41-1.41L9 13.38l7.09-7.09 1.41 1.41z', () => {
+        if (popupOpen) selectPopupItem(); else selectItem();
+      })); // select
 
-      // Select/checkmark SVG button
-      const btnSelect = document.createElement('button');
-      btnSelect.className = 'touch-btn';
-      btnSelect.innerHTML = `
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M9 16.2l-3.5-3.5 1.41-1.41L9 13.38l7.09-7.09 1.41 1.41z"/>
-        </svg>
-      `;
-      btnSelect.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        selectItem();
-      });
-
-      controls.appendChild(btnUp);
-      controls.appendChild(btnDown);
-      controls.appendChild(btnSelect);
       document.body.appendChild(controls);
-    } else {
-      console.log('Non-mobile device - no touch buttons added');
     }
   </script>
 </body>
