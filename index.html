@@ -52,7 +52,10 @@
       transform: translateX(-50%);
       display: flex;
       gap: 20px;
-      z-index: 1000;
+      z-index: 9999;
+      background: rgba(0,0,0,0.8);
+      padding: 10px 20px;
+      border-radius: 20px;
     }
 
     /* Touch buttons style */
@@ -69,6 +72,8 @@
       cursor: pointer;
       box-shadow: 0 0 10px limegreen;
       transition: background-color 0.2s ease;
+      min-width: 80px;
+      text-align: center;
     }
     .touch-btn:active {
       background-color: #33aa33;
@@ -120,30 +125,27 @@
       }
     });
 
-    // Detect mobile devices by checking for touch support and user agent
     function isMobile() {
       return ('ontouchstart' in window) || /Mobi|Android/i.test(navigator.userAgent);
     }
 
     if (isMobile()) {
-      // Create touch buttons container
+      console.log('Mobile device detected - adding touch buttons');
       const controls = document.createElement('div');
       controls.id = 'touch-controls';
 
-      // Create Up button
       const btnUp = document.createElement('button');
       btnUp.className = 'touch-btn';
       btnUp.textContent = 'UP';
-      btnUp.addEventListener('touchstart', (e) => {
+      btnUp.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         navigateUp();
       });
 
-      // Create Down button
       const btnDown = document.createElement('button');
       btnDown.className = 'touch-btn';
       btnDown.textContent = 'DOWN';
-      btnDown.addEventListener('touchstart', (e) => {
+      btnDown.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         navigateDown();
       });
@@ -151,6 +153,8 @@
       controls.appendChild(btnUp);
       controls.appendChild(btnDown);
       document.body.appendChild(controls);
+    } else {
+      console.log('Non-mobile device - no touch buttons added');
     }
   </script>
 </body>
