@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>maycis github pages thing</title>
+  <title>Mayci's GitHub</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <style>
     body {
@@ -63,7 +63,7 @@
       background-color: limegreen;
       border: none;
       border-radius: 12px;
-      padding: 20px 30px;
+      padding: 15px;
       font-family: 'Press Start 2P', cursive;
       font-size: 18px;
       color: black;
@@ -72,12 +72,22 @@
       cursor: pointer;
       box-shadow: 0 0 10px limegreen;
       transition: background-color 0.2s ease;
-      min-width: 80px;
-      text-align: center;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .touch-btn:active {
       background-color: #33aa33;
       box-shadow: 0 0 5px #33aa33;
+    }
+
+    /* SVG icon styling */
+    .touch-btn svg {
+      fill: black;
+      width: 24px;
+      height: 24px;
     }
   </style>
 </head>
@@ -138,25 +148,40 @@
       const controls = document.createElement('div');
       controls.id = 'touch-controls';
 
+      // Up arrow SVG button
       const btnUp = document.createElement('button');
       btnUp.className = 'touch-btn';
-      btnUp.textContent = 'UP';
+      btnUp.innerHTML = `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+        </svg>
+      `;
       btnUp.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         navigateUp();
       });
 
+      // Down arrow SVG button
       const btnDown = document.createElement('button');
       btnDown.className = 'touch-btn';
-      btnDown.textContent = 'DOWN';
+      btnDown.innerHTML = `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
+        </svg>
+      `;
       btnDown.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         navigateDown();
       });
 
+      // Select/checkmark SVG button
       const btnSelect = document.createElement('button');
       btnSelect.className = 'touch-btn';
-      btnSelect.textContent = 'SELECT';
+      btnSelect.innerHTML = `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M9 16.2l-3.5-3.5 1.41-1.41L9 13.38l7.09-7.09 1.41 1.41z"/>
+        </svg>
+      `;
       btnSelect.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         selectItem();
