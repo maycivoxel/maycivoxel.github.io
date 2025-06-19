@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mayci's GitHub</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <style>
     body {
       background-color: black;
       color: white;
       font-family: 'Press Start 2P', cursive;
       padding: 40px;
+      margin: 0;
     }
     h1, p {
       margin-bottom: 40px;
@@ -26,7 +27,7 @@
       cursor: pointer;
     }
     .menu-item.selected::before {
-      content: '>'; 
+      content: '>';
       color: lime;
       position: absolute;
       left: 0;
@@ -41,6 +42,37 @@
     }
     a:hover {
       text-decoration: underline;
+    }
+
+    /* Touch buttons container */
+    #touch-controls {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      z-index: 1000;
+    }
+
+    /* Touch buttons style */
+    .touch-btn {
+      background-color: limegreen;
+      border: none;
+      border-radius: 12px;
+      padding: 20px 30px;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 18px;
+      color: black;
+      user-select: none;
+      touch-action: manipulation;
+      cursor: pointer;
+      box-shadow: 0 0 10px limegreen;
+      transition: background-color 0.2s ease;
+    }
+    .touch-btn:active {
+      background-color: #33aa33;
+      box-shadow: 0 0 5px #33aa33;
     }
   </style>
 </head>
@@ -67,19 +99,59 @@
       });
     }
 
+    function navigateUp() {
+      selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+      updateSelection();
+    }
+
+    function navigateDown() {
+      selectedIndex = (selectedIndex + 1) % items.length;
+      updateSelection();
+    }
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowUp') {
-        selectedIndex = (selectedIndex - 1 + items.length) % items.length;
-        updateSelection();
+        navigateUp();
       } else if (e.key === 'ArrowDown') {
-        selectedIndex = (selectedIndex + 1) % items.length;
-        updateSelection();
+        navigateDown();
       } else if (e.key === 'Enter') {
         const link = items[selectedIndex].getAttribute('data-link');
         if (link) window.location.href = link;
       }
     });
+
+    // Detect mobile devices by checking for touch support and user agent
+    function isMobile() {
+      return ('ontouchstart' in window) || /Mobi|Android/i.test(navigator.userAgent);
+    }
+
+    if (isMobile()) {
+      // Create touch buttons container
+      const controls = document.createElement('div');
+      controls.id = 'touch-controls';
+
+      // Create Up button
+      const btnUp = document.createElement('button');
+      btnUp.className = 'touch-btn';
+      btnUp.textContent = 'UP';
+      btnUp.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        navigateUp();
+      });
+
+      // Create Down button
+      const btnDown = document.createElement('button');
+      btnDown.className = 'touch-btn';
+      btnDown.textContent = 'DOWN';
+      btnDown.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        navigateDown();
+      });
+
+      controls.appendChild(btnUp);
+      controls.appendChild(btnDown);
+      document.body.appendChild(controls);
+    }
   </script>
 </body>
 </html>
-
