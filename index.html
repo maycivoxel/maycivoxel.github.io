@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mayci's GitHub</title>
+  <title>mayci_voxel</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <style>
     body {
@@ -125,8 +125,22 @@
     }
 
     function selectItem() {
-      const link = items[selectedIndex].getAttribute('data-link');
-      if (link) window.location.href = link;
+      const selectedItem = items[selectedIndex];
+      const link = selectedItem.getAttribute('data-link');
+
+      if (selectedItem.textContent.trim() === 'Game store') {
+        const choice = prompt(
+          "Which one?\n1: maycithegal.itch.io\n2: gamejolt.com/@maycivoxel/games",
+          "1"
+        );
+        if (choice === '1') {
+          window.location.href = 'https://maycithegal.itch.io/';
+        } else if (choice === '2') {
+          window.location.href = 'https://gamejolt.com/@maycivoxel/games';
+        }
+      } else if (link) {
+        window.location.href = link;
+      }
     }
 
     document.addEventListener('keydown', (e) => {
